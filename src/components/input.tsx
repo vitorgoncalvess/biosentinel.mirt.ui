@@ -1,17 +1,20 @@
-import React, { HTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from "react";
 
-type Props = HTMLAttributes<HTMLInputElement> & {
-  label: string;
+type Props = InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  invalid?: boolean;
 };
 
-const Input = ({ label, ...props }: Props) => {
+const Input = ({ label, invalid, ...props }: Props) => {
   return (
     <div className="flex flex-col">
       <label htmlFor="" className="font-medium">
         {label}
       </label>
       <input
-        className="w-full bg-[#E2E2E2] rounded h-10 p-2 outline-none"
+        className={`w-full bg-[#ebebeb] hover:bg-zinc-200 rounded h-10 p-2 outline-none ${
+          invalid ? "bg-red-100 border border-red-200" : ""
+        }`}
         type="text"
         {...props}
       />

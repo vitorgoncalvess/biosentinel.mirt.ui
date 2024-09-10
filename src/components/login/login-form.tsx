@@ -1,10 +1,16 @@
 import React from "react";
 import Input from "../input";
-import Button from "../button";
 import authService from "@/services/auth-service";
 import { LoginSchema } from "@/types/auth";
+import LoginButton from "./login-button";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
-const LoginForm = () => {
+type Props = {
+  invalid: boolean;
+};
+
+const LoginForm = ({ invalid }: Props) => {
   const handleForm = async (formData: FormData) => {
     "use server";
 
@@ -15,22 +21,29 @@ const LoginForm = () => {
 
     const data = await authService.login(payload);
 
-    console.log(data);
+    if (data?.status === 200) {
+      redirect("/teste");
+    }
+
+    redirect("/?invalid-credentials=true");
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 animate-enter-left">
       <header>
         <h1 className="text-[32px] font-semibold">Bem vindo</h1>
         <h2 className="font-medium opacity-30">Entre agora em nosso sistema</h2>
       </header>
       <form action={handleForm} className="w-full flex flex-col gap-5">
-        <Input label="E-mail" name="email" />
-        <Input label="Senha" name="password" />
+        <Input label="E-mail" name="email" invalid={invalid} />
+        <Input
+          label="Senha"
+          name="password"
+          invalid={invalid}
+          type="password"
+        />
         <div className="w-full flex items-center justify-between text-[14px]">
-          <Button className="bg-[#68DD70] py-[10px] px-10 rounded-lg text-white font-semibold">
-            Entrar
-          </Button>
+          <LoginButton invalid={invalid} />
           <span className="opacity-30 cursor-pointer">Esqueci minha senha</span>
         </div>
         <div className="flex items-center justify-center">
@@ -38,10 +51,13 @@ const LoginForm = () => {
           <h1 className="absolute bg-white p-3 text-sm opacity-60">ou</h1>
         </div>
         <div className="flex flex-col gap-2">
-          <label htmlFor="">Não tem conta?</label>
-          <Button className="border border-[#68DD70] text-[#68DD70] py-[10px] px-10 rounded-lg font-semibold w-fit">
+          <label className="opacity-50">Não tem conta?</label>
+          <Link
+            href="/sign-in"
+            className="border border-[#68DD70] text-[#68DD70] py-[10px] px-10 rounded-lg font-semibold w-fit"
+          >
             Registre-se
-          </Button>
+          </Link>
         </div>
         <div className="flex flex-col gap-2">
           <label className="opacity-30" htmlFor="">

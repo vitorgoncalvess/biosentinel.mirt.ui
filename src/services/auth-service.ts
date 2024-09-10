@@ -1,4 +1,9 @@
-import { LoginSchema } from "@/types/auth";
+import {
+  loginSchema,
+  LoginSchema,
+  registerSchema,
+  RegisterSchema,
+} from "@/types/auth";
 import { cookies } from "next/headers";
 import { Service } from "./service";
 
@@ -7,23 +12,61 @@ class AuthService extends Service {
     super(url);
   }
 
-  async login(formData: LoginSchema) {
+  async login(payload: LoginSchema) {
+    const res = loginSchema.safeParse(payload);
+
+    if (res.error) {
+      return {
+        status: 404,
+        ...res.error,
+      };
+    }
+
     try {
       const resp = await this.api(`${this.url}/login`, {
         method: "POST",
-        body: formData,
+        body: payload,
       });
-
-      console.log(formData, `${this.url}/login`);
 
       const data = await resp.json();
 
       const cookiesStore = cookies();
       cookiesStore.set("token", data.accessToken);
 
-      return data;
+      return {
+        status: resp.status,
+        ...data,
+      };
     } catch (err) {
       return null;
+    }
+  }
+
+  async register(payload: RegisterSchema) {
+    const res = registerSchema.safeParse(payload);
+
+    if (res.error) {
+      return {
+        status: 404,
+        ...res.error,
+      };
+    }
+
+    try {
+      const resp = await this.api(`${this.url}/register`, {
+        method: "POST",
+        body: payload,
+      });
+
+      return {
+        status: resp.status,
+        message: "created",
+      };
+    } catch (err) {
+      return {
+        status: 500,
+        error: err,
+      };
     }
   }
 }

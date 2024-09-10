@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .animate-enter-left {
+    animation: animate-enter-left 0.4s ease-in-out forwards;
+  }
+
+  @keyframes animate-enter-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: initial;
+      transform: initial;
+    }
+  }
+
+  .animate-enter-right {
+    animation: animate-enter-right 0.4s ease-in-out forwards;
+  }
+
+  @keyframes animate-enter-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: initial;
+      transform: initial;
+    }
+  }
+}
