@@ -32,4 +32,17 @@
       transform: initial;
     }
   }
+
+  .animate-width-full {
+    animation: animate-width-full 3.5s linear forwards;
+  }
+
+  @keyframes animate-width-full {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Input from "../input";
 import Link from "next/link";
@@ -5,31 +7,31 @@ import SignInButton from "./sign-in-button";
 import formToObject from "@/utils/formatters/form-to-object";
 import authService from "@/services/auth-service";
 import { RegisterSchema } from "@/types/auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Props = {
   invalid?: boolean;
 };
 
 const SignInForm = ({ invalid }: Props) => {
-  const handleForm = async (formData: FormData) => {
-    "use server";
+  const router = useRouter();
 
+  const handleForm = async (formData: FormData) => {
     const payload = formToObject<RegisterSchema>(formData, [""]);
 
     if (payload.password !== formData.get("c_password")) {
-      redirect("?=password-mismatch=true");
+      router.push("?=password-mismatch=true");
     }
 
     const data = await authService.register(payload);
 
     if (data.status === 201) {
-      redirect("/?account-created=true");
+      router.push("/?account-created=true");
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-enter-right">
+    <div className="flex flex-col gap-4 animate-enter-right w-full">
       <header>
         <h1 className="text-[32px] font-semibold">Cadastre-se agora</h1>
         <h2 className="font-medium opacity-30">
@@ -39,7 +41,7 @@ const SignInForm = ({ invalid }: Props) => {
       <form action={handleForm} className="w-full flex flex-col gap-5">
         <Input label="Nome completo" name="name" invalid={invalid} />
         <Input label="E-mail" name="email" invalid={invalid} />
-        <div className="flex gap-4">
+        <div className="flex gap-4 [&>*]:grow">
           <Input
             label="Senha"
             name="password"

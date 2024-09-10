@@ -5,6 +5,7 @@ import { LoginSchema } from "@/types/auth";
 import LoginButton from "./login-button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Toast from "../toast";
 
 type Props = {
   invalid: boolean;
@@ -29,7 +30,7 @@ const LoginForm = ({ invalid }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 animate-enter-left">
+    <div className="flex flex-col gap-4 animate-enter-left w-full">
       <header>
         <h1 className="text-[32px] font-semibold">Bem vindo</h1>
         <h2 className="font-medium opacity-30">Entre agora em nosso sistema</h2>
