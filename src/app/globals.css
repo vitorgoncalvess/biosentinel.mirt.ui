@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .text-error {
+    @apply text-red-500 text-sm opacity-80;
+  }
+
   .animate-enter-left {
     animation: animate-enter-left 0.4s ease-in-out forwards;
   }

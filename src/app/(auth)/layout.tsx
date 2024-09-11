@@ -1,5 +1,5 @@
 import LoginToast from "@/components/login/login-toast";
-import React from "react";
+import React, { Suspense } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -12,7 +12,9 @@ const Layout = ({ children }: Props) => {
       <section className="py-20 pr-4 grow flex items-center">
         {children}
       </section>
-      <LoginToast />
+      <Suspense>
+        <LoginToast />
+      </Suspense>
     </main>
   );
 };

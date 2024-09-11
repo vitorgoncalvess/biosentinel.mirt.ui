@@ -1,34 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../input";
 import Link from "next/link";
 import SignInButton from "./sign-in-button";
-import formToObject from "@/utils/formatters/form-to-object";
-import authService from "@/services/auth-service";
-import { RegisterSchema } from "@/types/auth";
+import { useFormState } from "react-dom";
+import handleSignForm from "@/actions/sign-in/handle-sign-form";
+import { v_pass } from "@/types/auth";
+import { ZodIssue } from "zod";
+import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/navigation";
 
-type Props = {
-  invalid?: boolean;
-};
+const SignInForm = () => {
+  const [state, action] = useFormState(handleSignForm, undefined);
+  const [pass, setPass] = useState("");
+  const [errors, setErrors] = useState<ZodIssue[]>([]);
 
-const SignInForm = ({ invalid }: Props) => {
   const router = useRouter();
 
-  const handleForm = async (formData: FormData) => {
-    const payload = formToObject<RegisterSchema>(formData, [""]);
+  useEffect(() => {
+    const validatePass = v_pass.safeParse(pass);
 
-    if (payload.password !== formData.get("c_password")) {
-      router.push("?=password-mismatch=true");
+    if (validatePass.error) {
+      setErrors(validatePass.error.errors);
+    } else {
+      setErrors([]);
     }
+  }, [pass]);
 
-    const data = await authService.register(payload);
-
-    if (data.status === 201) {
+  useEffect(() => {
+    if (state?.message) {
       router.push("/?account-created=true");
     }
-  };
+  }, [state]);
 
   return (
     <div className="flex flex-col gap-4 animate-enter-right w-full">
@@ -38,24 +42,73 @@ const SignInForm = ({ invalid }: Props) => {
           Crie uma conta em nosso sistema
         </h2>
       </header>
-      <form action={handleForm} className="w-full flex flex-col gap-5">
-        <Input label="Nome completo" name="name" invalid={invalid} />
-        <Input label="E-mail" name="email" invalid={invalid} />
+      <form action={action} className="w-full flex flex-col gap-5">
+        <Input
+          label="Nome completo"
+          name="name"
+          invalid={state?.errors?.name}
+          error={state?.errors?.name?.[0]}
+        />
+        <Input
+          label="E-mail"
+          name="email"
+          invalid={state?.errors?.email}
+          error={state?.errors?.email?.[0]}
+        />
         <div className="flex gap-4 [&>*]:grow">
-          <Input
-            label="Senha"
-            name="password"
-            invalid={invalid}
-            type="password"
-          />
+          <div className="relative">
+            <Input
+              label="Senha"
+              name="password"
+              type="password"
+              invalid={state?.errors?.password}
+              error="Sua senha tem que ser muito forte"
+              value={pass}
+              onChange={({ target }) => setPass(target.value)}
+            />
+          </div>
           <Input
             label="Confirmar senha"
             name="c_password"
-            invalid={invalid}
             type="password"
+            invalid={state?.errors?.c_password}
+            error={state?.errors?.c_password?.[0]}
           />
         </div>
-        <SignInButton invalid={invalid} />
+        <div className="flex flex-col gap-1 w-5/12">
+          <div className="flex items-center justify-between gap-1">
+            {Array.from({
+              length: 4 - errors?.length,
+            }).map((_, i) => (
+              <div
+                key={i}
+                className={twMerge(
+                  "w-full h-2 rounded bg-blue-300",
+                  errors?.length > 0 && "bg-emerald-300",
+                  errors?.length > 1 && "bg-yellow-300",
+                  errors?.length > 2 && "bg-red-300"
+                )}
+              ></div>
+            ))}
+            {Array.from({
+              length: errors?.length,
+            }).map((_, i) => (
+              <div key={i} className="bg-zinc-300 w-full h-2 rounded"></div>
+            ))}
+          </div>
+          <h1 className="text-sm font-semibold opacity-80">
+            Força da senha:{" "}
+            {pass &&
+              (errors.length > 2
+                ? "Fraca"
+                : errors.length > 1
+                ? "Boa"
+                : errors.length > 0
+                ? "Forte"
+                : "Muito forte")}
+          </h1>
+        </div>
+        <SignInButton />
         <div className="flex items-center justify-center">
           <hr className="w-full" />
           <h1 className="absolute bg-white p-3 text-sm opacity-60">ou</h1>

@@ -5,7 +5,6 @@ import { LoginSchema } from "@/types/auth";
 import LoginButton from "./login-button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Toast from "../toast";
 
 type Props = {
   invalid: boolean;

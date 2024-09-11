@@ -19,6 +19,7 @@ const LoginToast = () => {
     if (state === "account-created") {
       toast();
     }
+    // eslint-disable-next-line
   }, [state]);
 
   return (

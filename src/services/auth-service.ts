@@ -42,16 +42,7 @@ class AuthService extends Service {
     }
   }
 
-  async register(payload: RegisterSchema) {
-    const res = registerSchema.safeParse(payload);
-
-    if (res.error) {
-      return {
-        status: 404,
-        ...res.error,
-      };
-    }
-
+  async register(payload: Partial<RegisterSchema>) {
     try {
       const resp = await this.api(`${this.url}/register`, {
         method: "POST",
