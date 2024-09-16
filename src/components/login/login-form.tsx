@@ -5,6 +5,7 @@ import { LoginSchema } from "@/types/auth";
 import LoginButton from "./login-button";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 type Props = {
   invalid: boolean;
@@ -19,10 +20,32 @@ const LoginForm = ({ invalid }: Props) => {
       password: formData.get("password"),
     } as LoginSchema;
 
-    const data = await authService.login(payload);
+    const cookieStore = cookies();
+    const rm = cookieStore.get("rm-auth")?.value;
+
+    let rmValue = false;
+
+    if (rm) {
+      const rmDate = new Date(rm.replaceAll('"', ""));
+      const expireDate = new Date();
+      expireDate.setDate(rmDate.getDate() + 30);
+      if (!(new Date() > expireDate)) {
+        rmValue = true;
+      }
+    }
+
+    const data = await authService.login(payload, rmValue);
 
     if (data?.status === 200) {
-      redirect("/teste");
+      if (rmValue) {
+        redirect("/home");
+      }
+
+      if (data.twoFactorEnabled) {
+        redirect("?2fa-auth=true");
+      } else {
+        redirect("/home");
+      }
     }
 
     redirect("/?invalid-credentials=true");

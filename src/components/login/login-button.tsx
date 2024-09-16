@@ -1,8 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../button";
 import { useFormStatus } from "react-dom";
+import { useSearchParams } from "next/navigation";
+import useToast from "@/hooks/useToast";
+import { useRouter } from "next/navigation";
+import saveRmIntoCookies from "@/actions/login/save-rm-into-cookies";
 
 type Props = {
   label?: string;
@@ -11,6 +15,32 @@ type Props = {
 
 const LoginButton = ({ label, invalid }: Props) => {
   const { pending } = useFormStatus();
+  const { toast } = useToast();
+  const [state, setState] = useState("");
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    setState(Array.from(searchParams.keys())[0]);
+
+    const rmDate = localStorage.getItem("rm-auth");
+
+    if (rmDate) {
+      saveRmIntoCookies(rmDate);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (state === "account-created") {
+      toast({
+        header: "Conta criada com sucesso!",
+        body: "Você já pode fazer login usando o acesso que acabou de criar.",
+      });
+      router.push("/");
+    }
+    // eslint-disable-next-line
+  }, [state]);
 
   return (
     <>

@@ -33,3 +33,9 @@ export const registerSchema = z
   });
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
+
+export const authSchema = z.object({
+  twoFactorAuthenticationCode: z.string().trim(),
+});
+
+export type AuthSchema = z.infer<typeof authSchema>;

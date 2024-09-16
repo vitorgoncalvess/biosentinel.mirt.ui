@@ -1,21 +1,6 @@
-"use client";
+import { ToastContext } from "@/providers/toast-provider";
+import { useContext } from "react";
 
-import { useState } from "react";
-
-const useToast = () => {
-  const [show, setShow] = useState(false);
-
-  const toast = () => {
-    setShow(true);
-    setTimeout(() => {
-      setShow(false);
-    }, 3500);
-  };
-
-  return {
-    show,
-    toast,
-  };
-};
+const useToast = () => useContext(ToastContext);
 
 export default useToast;
