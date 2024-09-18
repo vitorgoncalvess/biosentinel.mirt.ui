@@ -2,7 +2,7 @@
 
 import authService from "@/services/auth-service";
 import { authSchema } from "@/types/auth";
-import formToObject from "@/utils/formatters/form-to-object";
+import { formToObject } from "@/utils/formatters";
 
 type FormState =
   | {

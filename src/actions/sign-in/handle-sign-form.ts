@@ -2,7 +2,7 @@
 
 import authService from "@/services/auth-service";
 import { registerSchema, RegisterSchema } from "@/types/auth";
-import formToObject from "@/utils/formatters/form-to-object";
+import { formToObject } from "@/utils/formatters";
 import bcrypt from "bcrypt";
 
 type FormState =

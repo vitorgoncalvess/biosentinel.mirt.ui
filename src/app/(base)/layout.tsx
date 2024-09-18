@@ -1,3 +1,4 @@
+import Sidebar from "@/components/sidebar";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -15,7 +16,12 @@ const Layout = ({ children }: Props) => {
     redirect("/");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex">
+      <Sidebar />
+      <main className="bg-white grow">{children}</main>
+    </div>
+  );
 };
 
 export default Layout;
