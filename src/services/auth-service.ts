@@ -12,6 +12,17 @@ class AuthService extends Service {
     super(url);
   }
 
+  getToken() {
+    const cookieStore = cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (token) {
+      return token;
+    }
+
+    return null;
+  }
+
   async login(payload: LoginSchema, rm: boolean) {
     const res = loginSchema.safeParse(payload);
 
@@ -33,6 +44,7 @@ class AuthService extends Service {
       const cookiesStore = cookies();
       cookiesStore.set("email", data.email);
       cookiesStore.set("name", data.name);
+      cookiesStore.set("two-auth-enabled", data.twoFactorEnabled);
 
       if (!data.twoFactorEnabled || rm) {
         cookiesStore.set("token", data.access_token);
@@ -57,8 +69,6 @@ class AuthService extends Service {
       });
 
       const data = await resp.json();
-
-      cookieStore.delete("name");
 
       cookieStore.set("email", data.email);
       cookieStore.set("token", data.access_token);
@@ -97,6 +107,84 @@ class AuthService extends Service {
       return {
         status: 500,
         error: err,
+      };
+    }
+  }
+
+  async generateQrCode(ip?: string) {
+    const token = this.getToken();
+
+    try {
+      const resp = await this.api(`${this.url}/2fa/generate`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: {
+          ip,
+        },
+      });
+
+      const data = await resp.text();
+
+      return {
+        status: resp.status,
+        data,
+      };
+    } catch (err) {
+      return {
+        status: 500,
+        message: err,
+      };
+    }
+  }
+
+  async confirmTwoAuth(code: string) {
+    const token = this.getToken();
+
+    try {
+      const resp = await this.api(`${this.url}/2fa/confirm`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: { code },
+      });
+
+      const data = await resp.json();
+
+      return {
+        status: resp.status,
+        data,
+      };
+    } catch (err) {
+      return {
+        status: 500,
+        message: err,
+      };
+    }
+  }
+
+  async getTwoAuths() {
+    const token = this.getToken();
+
+    try {
+      const resp = await this.api(`${this.url}/2fa`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      const data = await resp.json();
+
+      return {
+        status: resp.status,
+        auths: data,
+      };
+    } catch (err) {
+      return {
+        status: 500,
+        message: err,
       };
     }
   }

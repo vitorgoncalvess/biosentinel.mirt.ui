@@ -9,22 +9,23 @@ import { twMerge } from "tailwind-merge";
 
 type Props = {
   item: (typeof constants.side_items)[0];
+  expanded?: boolean;
 };
 
-const SideItem = ({ item }: Props) => {
+const SideItem = ({ item, expanded }: Props) => {
   const pathname = usePathname();
   return (
-    <li
-      className={twMerge(
-        "p-[10px] border border-transparent group hover:border-zinc-200 transition cursor-pointer bg-gradient-to-t hover:from-white hover:to-zinc-100 box-border rounded-xl",
-        pathname.includes(item.link) && "border-zinc-200"
-      )}
-      key={item.label}
-    >
-      <Link href={item.link}>
+    <Link href={item.link} key={item.label}>
+      <li
+        className={twMerge(
+          "p-[10px] border border-transparent group hover:border-zinc-200 transition cursor-pointer bg-gradient-to-t hover:from-white hover:to-zinc-100 box-border rounded-xl flex items-center gap-2",
+          pathname.includes(item.link) && "border-zinc-200"
+        )}
+      >
         <Icon icon={item.icon} className="h-5 w-5 group-hover:text-zinc-800" />
-      </Link>
-    </li>
+        {expanded && <h1>{item.label}</h1>}
+      </li>
+    </Link>
   );
 };
 

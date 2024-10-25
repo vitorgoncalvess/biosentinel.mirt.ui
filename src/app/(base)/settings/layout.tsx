@@ -1,6 +1,6 @@
 import React from "react";
 import constants from "@/utils/constants";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import SideItem from "@/components/sideitem";
 
 type Props = {
   children: React.ReactNode;
@@ -13,18 +13,12 @@ const Page = ({ children }: Props) => {
         {constants.settings_items.map((item, index) => (
           <div key={index}>
             {item.map((subitem) => (
-              <li
-                className="flex items-center gap-2 cursor-pointer hover:bg-zinc-100 p-2 rounded-lg"
-                key={subitem.label}
-              >
-                <Icon icon={subitem.icon} className="h-6 w-6" />
-                <h1>{subitem.label}</h1>
-              </li>
+              <SideItem key={subitem.link} item={subitem} expanded />
             ))}
           </div>
         ))}
       </ul>
-      {children}
+      <section className="p-6 grow">{children}</section>
     </div>
   );
 };

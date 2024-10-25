@@ -32,7 +32,7 @@ const SignInForm = () => {
     if (state?.message) {
       router.push("/?account-created=true");
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <div className="flex flex-col gap-4 animate-enter-right w-full">

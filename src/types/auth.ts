@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+export type Auth = {
+  id: number;
+  method: string;
+  value: string;
+  ip: string;
+  city: string;
+  region: string;
+  region_code: string;
+  country: string;
+  country_name: string;
+};
+
 export const loginSchema = z.object({
   email: z.string(),
   password: z.string(),

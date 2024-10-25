@@ -11,14 +11,14 @@ export default {
       {
         label: "Perfil",
         icon: "fluent:person-28-regular",
-        link: "/user",
+        link: "/settings/user",
       },
     ],
     [
       {
         label: "Segurança",
         icon: "fluent:lock-closed-28-regular",
-        link: "/security",
+        link: "/settings/security",
       },
     ],
   ],
