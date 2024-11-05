@@ -4,6 +4,10 @@ import authService from "@/services/auth-service";
 import { authSchema } from "@/types/auth";
 import { formToObject } from "@/utils/formatters";
 
+export const generateQrCode = async (ip?: string) => {
+  return await authService.generateQrCode(ip);
+};
+
 type FormState =
   | {
       errors?: {
@@ -14,7 +18,10 @@ type FormState =
       message: string;
     };
 
-const handle2FaAuth = async (_: FormState | undefined, formData: FormData) => {
+export const handle2FaAuth = async (
+  _: FormState | undefined,
+  formData: FormData
+) => {
   const payload = formToObject(formData);
 
   const validatedFields = await authSchema.safeParseAsync(payload);
@@ -33,4 +40,10 @@ const handle2FaAuth = async (_: FormState | undefined, formData: FormData) => {
   };
 };
 
-export default handle2FaAuth;
+export const handleTwoAuthConfirm = async (code: string) => {
+  return await authService.confirmTwoAuth(code);
+};
+
+export const deleteAuth = async (id: number) => {
+  return await authService.deleteAuth(id);
+};

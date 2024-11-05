@@ -1,6 +1,6 @@
 "use client";
 
-import handle2FaAuth from "@/actions/2fa-auth/handle-2fa-auth";
+import { handle2FaAuth } from "@/actions/2fa-auth";
 import { Icon } from "@iconify/react";
 import Input from "../input";
 import Button from "../button";

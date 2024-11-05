@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 type Options = {
   method?: RequestInit["method"];
   headers?: RequestInit["headers"];
@@ -27,7 +29,25 @@ export class Service {
         opt.body = JSON.stringify(options.body);
       }
 
-      return fetch(url, opt as RequestInit);
+      return fetch(this.url + url, opt as RequestInit);
+    };
+  }
+
+  getToken() {
+    const cookieStore = cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (token) {
+      return token;
+    }
+
+    return null;
+  }
+
+  resolve<T>(status: number, props: T): { status: number; data: T } {
+    return {
+      status,
+      data: props,
     };
   }
 }
